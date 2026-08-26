@@ -70,6 +70,10 @@ const includeFiles = new Set([
   "storage-layout.snapshot.json", // pinned layout for the CI storage-layout gate
   ".env.example",
   ".github/workflows/ci.yml",
+  ".github/PULL_REQUEST_TEMPLATE.md",
+  ".github/ISSUE_TEMPLATE/bug_report.md",
+  ".github/ISSUE_TEMPLATE/documentation.md",
+  ".github/ISSUE_TEMPLATE/config.yml",
   "getSelectors.js",
   "archive/README.md",            // labels the deprecation trail
   // --- scripts/, enumerated per file (see DESIGN NOTE above) ---

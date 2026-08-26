@@ -1,0 +1,686 @@
+{
+  "CambioEnvelopeStorage": [
+    {
+      "type": "mapping(bytes32 => CambioEnvelopeNote)",
+      "name": "envelopeNotes"
+    },
+    {
+      "type": "mapping(bytes32 => CambioEnvelopeReceipt)",
+      "name": "envelopeReceipts"
+    },
+    {
+      "type": "mapping(bytes32 => bytes32[])",
+      "name": "envelopeReceiptsByNote"
+    },
+    {
+      "type": "mapping(address => mapping(uint256 => bool))",
+      "name": "envelopeSpentNonces"
+    },
+    {
+      "type": "mapping(address => IssuerEnvelopeProfile)",
+      "name": "issuerProfiles"
+    },
+    {
+      "type": "mapping(address => mapping(address => bool))",
+      "name": "pendingEndorsements"
+    },
+    {
+      "type": "mapping(bytes32 => CommitRecord)",
+      "name": "commitments"
+    },
+    {
+      "type": "mapping(address => RollingCeilingBuckets)",
+      "name": "issuerCeilingBuckets"
+    },
+    {
+      "type": "CambioEnvelopePhase",
+      "name": "phase"
+    },
+    {
+      "type": "CambioEnvelopeConfig",
+      "name": "config"
+    },
+    {
+      "type": "uint256",
+      "name": "envelopeReceiptCounter"
+    },
+    {
+      "type": "uint256",
+      "name": "envelopeNoteCounter"
+    }
+  ],
+  "CambioIssuerStorage": [
+    {
+      "type": "mapping(address => IssuerProfile)",
+      "name": "issuers"
+    }
+  ],
+  "ClaimAttributionStorage": [
+    {
+      "type": "uint32",
+      "name": "storageVersion"
+    },
+    {
+      "type": "bool",
+      "name": "initialized"
+    },
+    {
+      "type": "mapping(address => WalletClaims)",
+      "name": "walletClaims"
+    },
+    {
+      "type": "mapping(bytes32 => EscrowClaims)",
+      "name": "escrowClaims"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "issuerAttributedOutstanding"
+    },
+    {
+      "type": "uint256",
+      "name": "totalAttributedOutstanding"
+    },
+    {
+      "type": "uint16",
+      "name": "maxIssuerBucketsPerWallet"
+    },
+    {
+      "type": "uint64",
+      "name": "nextClaimMovementNonce"
+    },
+    {
+      "type": "uint256",
+      "name": "totalActiveEscrowClaims"
+    },
+    {
+      "type": "uint256[42]",
+      "name": "__gap"
+    }
+  ],
+  "ComplianceConfigStorage": [
+    {
+      "type": "bool",
+      "name": "kycEnforceActive"
+    },
+    {
+      "type": "bool",
+      "name": "screeningEnforceActive"
+    },
+    {
+      "type": "bool",
+      "name": "travelRuleEnforceActive"
+    },
+    {
+      "type": "bool",
+      "name": "cipEnforceActive"
+    },
+    {
+      "type": "uint256",
+      "name": "retired_activeScopeCount"
+    },
+    {
+      "type": "uint256",
+      "name": "sanctionsScopeCount"
+    },
+    {
+      "type": "uint256",
+      "name": "kycScopeCount"
+    },
+    {
+      "type": "uint256",
+      "name": "cipScopeCount"
+    },
+    {
+      "type": "uint256",
+      "name": "travelRuleScopeCount"
+    }
+  ],
+  "ComplianceHoldStorage": [
+    {
+      "type": "mapping(bytes32 => HoldRecord)",
+      "name": "holds"
+    },
+    {
+      "type": "EnumerableSet.Bytes32Set",
+      "name": "activeHolds"
+    }
+  ],
+  "ConsortiumStorage": [
+    {
+      "type": "mapping(address => BankProfile)",
+      "name": "bankProfiles"
+    },
+    {
+      "type": "mapping(address => bool)",
+      "name": "activeBanks"
+    },
+    {
+      "type": "mapping(address => mapping(uint256 => WalletConfig))",
+      "name": "bankWallets"
+    },
+    {
+      "type": "mapping(address => mapping(uint256 => CollateralPosition))",
+      "name": "bankCollateralPositions"
+    },
+    {
+      "type": "mapping(uint256 => AssetTypeConfig)",
+      "name": "assetTypes"
+    },
+    {
+      "type": "mapping(uint256 => AssetValuation)",
+      "name": "assetValuations"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "bankDepositAttestations"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "bankAttestationUpdatedAt"
+    },
+    {
+      "type": "mapping(address => bytes32)",
+      "name": "auditorReportHashes"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "auditorReportUpdatedAt"
+    },
+    {
+      "type": "mapping(address => DepositTokenAccount)",
+      "name": "depositAccounts"
+    },
+    {
+      "type": "mapping(address => BankComplianceMetrics)",
+      "name": "bankCompliance"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "bankTotalCollateralValue"
+    },
+    {
+      "type": "mapping(uint256 => Proposal)",
+      "name": "proposals"
+    },
+    {
+      "type": "mapping(uint256 => VoteTally)",
+      "name": "voteTallies"
+    },
+    {
+      "type": "mapping(uint256 => mapping(address => bool))",
+      "name": "proposalVotes"
+    },
+    {
+      "type": "mapping(address => mapping(address => uint256))",
+      "name": "pendingYieldByToken"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "yieldRemainderByToken"
+    },
+    {
+      "type": "ConsortiumReport",
+      "name": "lastConsortiumReport"
+    },
+    {
+      "type": "address[]",
+      "name": "registeredBanks"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "bankIndexPlusOne"
+    },
+    {
+      "type": "uint256",
+      "name": "proposalCounter"
+    },
+    {
+      "type": "uint256",
+      "name": "aggregateDepositBalance"
+    },
+    {
+      "type": "uint256",
+      "name": "rollingInterbankVolume"
+    },
+    {
+      "type": "mapping(bytes32 => bool)",
+      "name": "pausedOperations"
+    },
+    {
+      "type": "address",
+      "name": "emergencyGuardian"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "bankCollateralFactorBps"
+    }
+  ],
+  "DepositorIdentityStorage": [
+    {
+      "type": "mapping(address => BankHashRegistry)",
+      "name": "bankRegistries"
+    },
+    {
+      "type": "mapping(uint16 => SaltEpoch)",
+      "name": "saltEpochs"
+    },
+    {
+      "type": "uint16",
+      "name": "currentSaltEpoch"
+    },
+    {
+      "type": "uint16",
+      "name": "maxConcurrentEpochs"
+    },
+    {
+      "type": "EnumerableSet.AddressSet",
+      "name": "banksWithHashes"
+    },
+    {
+      "type": "uint256",
+      "name": "totalHashesRegistered"
+    },
+    {
+      "type": "uint256",
+      "name": "totalConflictChecksPerformed"
+    }
+  ],
+  "EnvelopeInheritanceStorage": [
+    {
+      "type": "mapping(bytes32 => bytes32)",
+      "name": "parentOf"
+    },
+    {
+      "type": "mapping(bytes32 => bytes32[])",
+      "name": "childrenOf"
+    }
+  ],
+  "EnvelopeStorage": [
+    {
+      "type": "mapping(bytes32 => EnvelopeData)",
+      "name": "envelopes"
+    },
+    {
+      "type": "mapping(bytes32 => DisputeData)",
+      "name": "disputes"
+    },
+    {
+      "type": "mapping(bytes32 => OracleBinding)",
+      "name": "oracleBindings"
+    },
+    {
+      "type": "mapping(address => bytes32[])",
+      "name": "senderEnvelopeIds"
+    },
+    {
+      "type": "mapping(address => bytes32[])",
+      "name": "recipientEnvelopeIds"
+    },
+    {
+      "type": "uint256",
+      "name": "envelopeNonce"
+    },
+    {
+      "type": "uint40",
+      "name": "defaultDisputeTimeout"
+    },
+    {
+      "type": "uint40",
+      "name": "defaultClawbackWindow"
+    }
+  ],
+  "InstitutionLifecycleStorage": [
+    {
+      "type": "uint32",
+      "name": "storageVersion"
+    },
+    {
+      "type": "bool",
+      "name": "initialized"
+    },
+    {
+      "type": "mapping(address => InstitutionMode)",
+      "name": "institutionMode"
+    },
+    {
+      "type": "mapping(bytes32 => address)",
+      "name": "institutionIdToBank"
+    },
+    {
+      "type": "mapping(address => bytes32)",
+      "name": "bankToInstitutionId"
+    },
+    {
+      "type": "uint256[45]",
+      "name": "__gap"
+    }
+  ],
+  "InstitutionStorage": [
+    {
+      "type": "mapping(bytes32 => Institution)",
+      "name": "institutions"
+    },
+    {
+      "type": "bytes32[]",
+      "name": "institutionIds"
+    },
+    {
+      "type": "uint256",
+      "name": "institutionCount"
+    },
+    {
+      "type": "mapping(address => WalletAffiliation)",
+      "name": "walletAffiliations"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(bytes32 => mapping(address => bool)))",
+      "name": "scopedRoles"
+    },
+    {
+      "type": "mapping(bytes32 => uint256)",
+      "name": "networkPolicies"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(bytes32 => uint256))",
+      "name": "institutionPolicies"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(bytes32 => bool))",
+      "name": "institutionPolicySet"
+    },
+    {
+      "type": "mapping(address => mapping(bytes32 => uint256))",
+      "name": "walletPolicies"
+    },
+    {
+      "type": "mapping(address => mapping(bytes32 => bool))",
+      "name": "walletPolicySet"
+    }
+  ],
+  "IssuanceCapacityStorage": [
+    {
+      "type": "uint32",
+      "name": "storageVersion"
+    },
+    {
+      "type": "bool",
+      "name": "initialized"
+    },
+    {
+      "type": "uint256[48]",
+      "name": "__gap"
+    }
+  ],
+  "IssuanceControlStorage": [
+    {
+      "type": "bool",
+      "name": "legacyMintUnlocked"
+    },
+    {
+      "type": "bool",
+      "name": "capacityModelActive"
+    },
+    {
+      "type": "uint256",
+      "name": "reservationNonce"
+    },
+    {
+      "type": "mapping(bytes32 => Reservation)",
+      "name": "reservations"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "reservedTotal"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "dailyCapLimit"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "dailyUsed"
+    },
+    {
+      "type": "mapping(address => uint40)",
+      "name": "dailyBucket"
+    },
+    {
+      "type": "uint256[44]",
+      "name": "__gap"
+    }
+  ],
+  "IssuanceSponsorshipStorage": [
+    {
+      "type": "uint32",
+      "name": "storageVersion"
+    },
+    {
+      "type": "bool",
+      "name": "initialized"
+    },
+    {
+      "type": "uint256[48]",
+      "name": "__gap"
+    }
+  ],
+  "RelayerFallbackStorage": [
+    {
+      "type": "mapping(address => FallbackDeclaration)",
+      "name": "declarations"
+    },
+    {
+      "type": "uint40",
+      "name": "defaultFallbackWindow"
+    }
+  ],
+  "ReserveControlStorage": [
+    {
+      "type": "uint32",
+      "name": "storageVersion"
+    },
+    {
+      "type": "bool",
+      "name": "initialized"
+    },
+    {
+      "type": "mapping(bytes32 => ReservePosition)",
+      "name": "reservePositions"
+    },
+    {
+      "type": "mapping(uint256 => AssetPrice)",
+      "name": "assetPrices"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "issuerFloor"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "reimbursementEncumbered"
+    },
+    {
+      "type": "uint256[]",
+      "name": "activeAssetTypes"
+    },
+    {
+      "type": "uint256[43]",
+      "name": "__gap"
+    }
+  ],
+  "ScreeningStorage": [
+    {
+      "type": "mapping(address => Screening)",
+      "name": "screenings"
+    },
+    {
+      "type": "uint40",
+      "name": "screeningStaleAfter"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(address => Screening))",
+      "name": "scopedScreenings"
+    },
+    {
+      "type": "mapping(address => NetworkClearance)",
+      "name": "networkClearances"
+    },
+    {
+      "type": "mapping(bytes32 => bool)",
+      "name": "institutionSanctionsEnabled"
+    },
+    {
+      "type": "mapping(address => EnumerableSet.Bytes32Set)",
+      "name": "walletScopedInstitutions"
+    },
+    {
+      "type": "uint256",
+      "name": "sanctionsEnabledCount"
+    }
+  ],
+  "SettlementCycleStorage": [
+    {
+      "type": "uint32",
+      "name": "storageVersion"
+    },
+    {
+      "type": "bool",
+      "name": "initialized"
+    },
+    {
+      "type": "uint256",
+      "name": "cycleNonce"
+    },
+    {
+      "type": "uint256",
+      "name": "obligationNonce"
+    },
+    {
+      "type": "mapping(bytes32 => ISettlementCycle.SettlementCycle)",
+      "name": "cycles"
+    },
+    {
+      "type": "mapping(bytes32 => ISettlementCycle.SettlementObligation)",
+      "name": "obligations"
+    },
+    {
+      "type": "mapping(bytes32 => bytes32[])",
+      "name": "cycleObligationIds"
+    },
+    {
+      "type": "mapping(bytes32 => address[])",
+      "name": "cycleIssuers"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(address => bool))",
+      "name": "issuerSeen"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(address => bool))",
+      "name": "confirmedBy"
+    },
+    {
+      "type": "mapping(bytes32 => uint256)",
+      "name": "confirmedCount"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(address => mapping(address => int256)))",
+      "name": "pairNet"
+    },
+    {
+      "type": "mapping(bytes32 => Pair[])",
+      "name": "cyclePairs"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(address => mapping(address => bool)))",
+      "name": "pairSeen"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(address => mapping(address => bool)))",
+      "name": "pairFunded"
+    },
+    {
+      "type": "mapping(bytes32 => mapping(address => uint256))",
+      "name": "cycleLien"
+    },
+    {
+      "type": "mapping(bytes32 => bool)",
+      "name": "consumedFundingRef"
+    },
+    {
+      "type": "bytes32",
+      "name": "currentCycleId"
+    },
+    {
+      "type": "mapping(bytes32 => bool)",
+      "name": "challenged"
+    },
+    {
+      "type": "bool",
+      "name": "settlementModelActive"
+    },
+    {
+      "type": "uint256[30]",
+      "name": "__gap"
+    }
+  ],
+  "SmartLockEnvelopeStorage": [
+    {
+      "type": "mapping(bytes32 => SmartLockCondition)",
+      "name": "conditions"
+    }
+  ],
+  "TransferManagementStorage": [
+    {
+      "type": "mapping(bytes32 => CancellationRecord[])",
+      "name": "cancellationHistory"
+    },
+    {
+      "type": "mapping(bytes32 => uint256)",
+      "name": "cancellationCount"
+    }
+  ],
+  "TravelRuleStorage": [
+    {
+      "type": "mapping(bytes32 => TravelRule)",
+      "name": "byEnvelope"
+    },
+    {
+      "type": "mapping(address => PendingTravelRule)",
+      "name": "pending"
+    }
+  ],
+  "WalletRecoveryStorage": [
+    {
+      "type": "mapping(bytes32 => RecoveryRecord)",
+      "name": "recoveries"
+    },
+    {
+      "type": "mapping(address => bytes32)",
+      "name": "walletRecoveryId"
+    },
+    {
+      "type": "mapping(address => uint256)",
+      "name": "activeRecoveryCount"
+    },
+    {
+      "type": "mapping(address => address)",
+      "name": "recoverySuccessor"
+    },
+    {
+      "type": "mapping(address => address)",
+      "name": "recoveryStandby"
+    },
+    {
+      "type": "uint256",
+      "name": "recoveryCounter"
+    },
+    {
+      "type": "uint40",
+      "name": "defaultElectionWindow"
+    },
+    {
+      "type": "IWalletRecovery.RecoveryPolicy",
+      "name": "defaultPolicy"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+# ==============================
+# T3 Relayer vhost (split 80/443)
+# ==============================
+
+# Port 80 — ACME HTTP-01 + redirect to HTTPS
+server {
+  listen 80;
+  listen [::]:80;
+  server_name relay.t3token.io;
+
+  # Serve ACME challenges from a static webroot
+  location ^~ /.well-known/acme-challenge/ {
+    root /var/www/letsencrypt;
+    default_type "text/plain";
+    try_files $uri =404;
+    allow all;
+  }
+
+  # Redirect everything else to HTTPS
+  location / { return 301 https://$host$request_uri; }
+}
+
+# Port 443 — Proxy to Node relayer with hardening
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  http3 off;
+  server_name relay.t3token.io;
+
+  # Certs (set by certbot or your panel)
+  {{ssl_certificate}}
+  {{ssl_certificate_key}}
+
+  # Optional placeholders if your environment injects them
+  {{root}}
+  {{nginx_access_log}}
+  {{nginx_error_log}}
+  {{settings}}
+
+  # Basic hardening and size limits
+  client_max_body_size 1m;
+  add_header X-Content-Type-Options nosniff always;
+  add_header Referrer-Policy no-referrer-when-downgrade always;
+  add_header X-Frame-Options SAMEORIGIN always;
+  add_header X-XSS-Protection "1; mode=block" always;
+
+  # NOTE: To enable rate limiting for /relay, define this in the global http{} context:
+  #   limit_req_zone $binary_remote_addr zone=relay_limit:10m rate=5r/s;
+
+  # Health endpoint (no rate limit; uncacheable)
+  location = /health {
+    proxy_pass http://127.0.0.1:{{app_port}}/health;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    add_header Cache-Control "no-store";
+  }
+
+  # Relay endpoint (apply rate limiting if zone configured)
+  location = /relay {
+    # Optional, requires limit_req_zone in http{}:
+    # limit_req zone=relay_limit burst=10 nodelay;
+    proxy_pass http://127.0.0.1:{{app_port}}/relay;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 60s;
+  }
+
+  # Default proxy for any other paths
+  location / {
+    proxy_pass http://127.0.0.1:{{app_port}}/;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 60s;
+  }
+}

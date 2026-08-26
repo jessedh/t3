@@ -1,0 +1,179 @@
+# Besu Local QBFT Devnet
+# 4 validators + 1 RPC/full node
+#
+# Usage:
+#   docker compose -f docker/besu-local/docker-compose.yml up -d
+#   docker compose -f docker/besu-local/docker-compose.yml logs -f besu-rpc
+
+services:
+  besu-validator-1:
+    image: hyperledger/besu:26.6.0
+    container_name: besu-validator-1
+    hostname: besu-validator-1
+    networks:
+      - besu-local
+    volumes:
+      - ../../.besu-local/genesis.json:/config/genesis.json:ro
+      - ../../.besu-local/validator-1:/config/keys:ro
+      - ../../.besu-local/static-nodes.json:/config/static-nodes.json:ro
+      - besu-validator-1-data:/var/lib/besu
+    command:
+      - --genesis-file=/config/genesis.json
+      - --data-path=/var/lib/besu
+      - --node-private-key-file=/config/keys/key
+      - --min-gas-price=0
+      - --sync-mode=FULL
+      - --p2p-enabled=true
+      - --p2p-port=30303
+      - --discovery-enabled=true
+      - --static-nodes-file=/config/static-nodes.json
+      - --Xdns-enabled=true
+      - --Xdns-update-enabled=true
+      - --host-allowlist=*
+      - --logging=INFO
+    environment:
+      - BESU_OPTS=-Xmx768m
+    restart: unless-stopped
+
+  besu-validator-2:
+    image: hyperledger/besu:26.6.0
+    container_name: besu-validator-2
+    hostname: besu-validator-2
+    networks:
+      - besu-local
+    volumes:
+      - ../../.besu-local/genesis.json:/config/genesis.json:ro
+      - ../../.besu-local/validator-2:/config/keys:ro
+      - ../../.besu-local/static-nodes.json:/config/static-nodes.json:ro
+      - besu-validator-2-data:/var/lib/besu
+    command:
+      - --genesis-file=/config/genesis.json
+      - --data-path=/var/lib/besu
+      - --node-private-key-file=/config/keys/key
+      - --min-gas-price=0
+      - --sync-mode=FULL
+      - --p2p-enabled=true
+      - --p2p-port=30303
+      - --discovery-enabled=true
+      - --static-nodes-file=/config/static-nodes.json
+      - --Xdns-enabled=true
+      - --Xdns-update-enabled=true
+      - --host-allowlist=*
+      - --logging=INFO
+    environment:
+      - BESU_OPTS=-Xmx768m
+    restart: unless-stopped
+
+  besu-validator-3:
+    image: hyperledger/besu:26.6.0
+    container_name: besu-validator-3
+    hostname: besu-validator-3
+    networks:
+      - besu-local
+    volumes:
+      - ../../.besu-local/genesis.json:/config/genesis.json:ro
+      - ../../.besu-local/validator-3:/config/keys:ro
+      - ../../.besu-local/static-nodes.json:/config/static-nodes.json:ro
+      - besu-validator-3-data:/var/lib/besu
+    command:
+      - --genesis-file=/config/genesis.json
+      - --data-path=/var/lib/besu
+      - --node-private-key-file=/config/keys/key
+      - --min-gas-price=0
+      - --sync-mode=FULL
+      - --p2p-enabled=true
+      - --p2p-port=30303
+      - --discovery-enabled=true
+      - --static-nodes-file=/config/static-nodes.json
+      - --Xdns-enabled=true
+      - --Xdns-update-enabled=true
+      - --host-allowlist=*
+      - --logging=INFO
+    environment:
+      - BESU_OPTS=-Xmx768m
+    restart: unless-stopped
+
+  besu-validator-4:
+    image: hyperledger/besu:26.6.0
+    container_name: besu-validator-4
+    hostname: besu-validator-4
+    networks:
+      - besu-local
+    volumes:
+      - ../../.besu-local/genesis.json:/config/genesis.json:ro
+      - ../../.besu-local/validator-4:/config/keys:ro
+      - ../../.besu-local/static-nodes.json:/config/static-nodes.json:ro
+      - besu-validator-4-data:/var/lib/besu
+    command:
+      - --genesis-file=/config/genesis.json
+      - --data-path=/var/lib/besu
+      - --node-private-key-file=/config/keys/key
+      - --min-gas-price=0
+      - --sync-mode=FULL
+      - --p2p-enabled=true
+      - --p2p-port=30303
+      - --discovery-enabled=true
+      - --static-nodes-file=/config/static-nodes.json
+      - --Xdns-enabled=true
+      - --Xdns-update-enabled=true
+      - --host-allowlist=*
+      - --logging=INFO
+    environment:
+      - BESU_OPTS=-Xmx768m
+    restart: unless-stopped
+
+  besu-rpc:
+    image: hyperledger/besu:26.6.0
+    container_name: besu-rpc
+    hostname: besu-rpc
+    networks:
+      - besu-local
+    ports:
+      - "${BESU_RPC_HOST_PORT:-8545}:8545"
+      - "${BESU_WS_HOST_PORT:-8546}:8546"
+    volumes:
+      - ../../.besu-local/genesis.json:/config/genesis.json:ro
+      - ../../.besu-local/static-nodes.json:/config/static-nodes.json:ro
+      - besu-rpc-data:/var/lib/besu
+    command:
+      - --genesis-file=/config/genesis.json
+      - --data-path=/var/lib/besu
+      - --min-gas-price=0
+      - --sync-mode=FULL
+      - --p2p-enabled=true
+      - --p2p-port=30303
+      - --discovery-enabled=true
+      - --static-nodes-file=/config/static-nodes.json
+      - --Xdns-enabled=true
+      - --Xdns-update-enabled=true
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-api=ETH,NET,WEB3,ADMIN,DEBUG,TXPOOL,QBFT
+      - --rpc-http-cors-origins=*
+      - --rpc-http-max-active-connections=100
+      - --rpc-ws-enabled
+      - --rpc-ws-host=0.0.0.0
+      - --rpc-ws-port=8546
+      - --rpc-ws-api=ETH,NET,WEB3,ADMIN,DEBUG,TXPOOL,QBFT
+      - --host-allowlist=*
+      - --logging=INFO
+    environment:
+      - BESU_OPTS=-Xmx768m
+    restart: unless-stopped
+    depends_on:
+      - besu-validator-1
+      - besu-validator-2
+      - besu-validator-3
+      - besu-validator-4
+
+networks:
+  besu-local:
+    driver: bridge
+
+volumes:
+  besu-validator-1-data:
+  besu-validator-2-data:
+  besu-validator-3-data:
+  besu-validator-4-data:
+  besu-rpc-data:

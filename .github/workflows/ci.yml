@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  contracts:
+    name: Contracts (compile, test, gates)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: Install
+        run: npm ci
+      - name: Compile
+        run: npm run compile
+      - name: Test
+        run: npm test
+      - name: Selector collision check
+        run: node scripts/selector-collision-check.js
+      - name: Manifest ↔ ABI parity
+        run: node scripts/check-manifest-abi-parity.js
+      - name: Storage layout gate
+        run: node scripts/check-storage-layout.js
+      - name: Contract size gate
+        run: node scripts/check-contract-size.js
+      - name: Doc-claim gate (references in shipping STATUS docs must resolve)
+        run: node scripts/check-doc-claims.js
+
+  secrets:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read   # gitleaks-action lists PR commits via the API to scope the scan
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          # gitleaks-action v2 requires GITHUB_TOKEN to scan pull_request events.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+          # No PR comments (avoids needing pull-requests: write); the run status is enough.
+          GITLEAKS_ENABLE_COMMENTS: "false"

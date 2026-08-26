@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  relayer:
+    build: .
+    container_name: t3-relayer
+    restart: always
+    ports:
+      - "8787:8787"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production

@@ -1,0 +1,70 @@
+# Gitleaks configuration — T3 Programmable Fiat Framework
+#
+# Extends the default ruleset and adds project-specific rules for credential
+# shapes the default rules do NOT match.
+#
+# POLICY: new secrets are remediated, never suppressed. The allowlist below
+# covers only values that are public by construction (EVM addresses, the
+# well-known Anvil test keys). There are no commit-SHA suppressions: this repo
+# publishes as a files-only snapshot with no git history, so there is no history
+# for a scanner to trip over.
+#
+# ⚠️ A CLEAN SCAN IS NECESSARY, NOT SUFFICIENT.
+# Gitleaks matches known secret SHAPES. On 2026-08-25 it reported "no leaks
+# found" against a tree that contained a live root SSH password twelve times —
+# once in a JSON-escaped tool-permission string, and eleven times inside expect
+# scripts (SEC-3). The `expect-send-credential` rule below exists because of
+# that miss. The default-deny promotion allowlist
+# (scripts/lib/public-allowlist.js), not this scanner, is the control that keeps
+# secrets out of the public snapshot.
+
+[extend]
+useDefault = true
+
+# --- Project-specific rules -------------------------------------------------
+
+[[rules]]
+id = "expect-send-credential"
+description = "expect(1) script sending a literal credential — the SEC-3 shape the default ruleset misses"
+# NOTE: Go/RE2 has no lookahead. Instead of excluding command words, we require
+# the sent literal to contain NO whitespace — shell commands sent by expect
+# ("cat /root/x", "pm2 logs") always contain a space; a password rarely does.
+# Requires BOTH a digit and a punctuation character somewhere in the literal.
+# Command words sent by expect ("pm2reload", "restartservices") have neither;
+# passwords almost always have both. RE2 has no lookahead, so this is expressed
+# as alternation over the two orderings rather than two assertions.
+regex = '''send\s+\\{0,2}"{1,3}(?:[^"\s]*[0-9][^"\s]*[!-/:-@\[-`{-~][^"\s]*|[^"\s]*[!-/:-@\[-`{-~][^"\s]*[0-9][^"\s]*)\\{1,2}r"'''
+tags = ["credential", "expect", "SEC-3"]
+
+[[rules]]
+id = "ssh-password-in-config"
+description = "plaintext password adjacent to an ssh/scp invocation in a config or tool-permission blob"
+# Value may contain spaces -- only the closing quote terminates it -- but must
+# LOOK like a credential: at least one digit and one punctuation character.
+# Without that, form-field declarations such as
+#   password: { label: "Password", type: "password" }
+# match, and a rule that flags UI labels trains people to ignore it.
+regex = '''(?i)(sshpass\s+-p|password)\s*[=:]?\s*\\{0,2}"{1,3}(?:[^"\n]*[0-9][^"\n]*[!-/:-@\[-`{-~][^"\n]*|[^"\n]*[!-/:-@\[-`{-~][^"\n]*[0-9][^"\n]*)"'''
+tags = ["credential", "ssh", "SEC-3"]
+
+[allowlist]
+description = "Values that are public by construction"
+
+# Internal planning docs. These never publish (hardDeny blocks `plans/` in
+# scripts/lib/public-allowlist.js) and they DESCRIBE credential patterns in
+# prose — e.g. documenting the expect-style `send "<literal>\r"` shape that the
+# expect-send-credential rule above detects. That self-reference is the only
+# reason this path is listed. It is NOT a licence to store secrets here.
+# Not anchored with ^ deliberately: gitleaks reports ABSOLUTE paths when
+# --source points outside the repo root (as the promotion staging scan does),
+# so an anchored pattern silently fails to match.
+paths = [
+  '''(^|/)plans/.*''',
+]
+
+# Regexes for values that look like secrets but are public.
+regexes = [
+  '''0x[0-9a-fA-F]{40}\b''',                                                # 20-byte EVM addresses (public on-chain data)
+  '''0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80''', # Anvil/Hardhat account #0 key — published in Foundry/Hardhat docs
+  '''0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d''', # Anvil/Hardhat account #1 key — same
+]

@@ -1,0 +1,77 @@
+{
+  "name": "t3",
+  "version": "1.0.0",
+  "description": "Programmable fiat framework: an EIP-2535 Diamond ERC-20 deposit token with programmable transfer envelopes and per-bank claim attribution on a permissioned Hyperledger Besu consortium.",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "coverage": "hardhat coverage",
+    "deploy:localhost": "hardhat run scripts/deploy-diamond-complete.js --network localhost",
+    "deploy:besu-local": "hardhat run scripts/deploy-diamond-complete.js --network besu-local",
+    "node": "hardhat node",
+    "relayer": "node relayer/server.js",
+    "test:e2e:relay": "cross-env RUN_E2E_RELAY=1 hardhat test test/e2e/*.e2e.test.js --network besu-local"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-ignition": "^0.15.16",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.1.3",
+    "@nomicfoundation/ignition-core": "^0.15.11",
+    "@openzeppelin/hardhat-upgrades": "^3.9.0",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^10.0.10",
+    "chai": "^4.5.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.5.0",
+    "ethers": "^6.14.1",
+    "hardhat": "^2.26.1",
+    "hardhat-gas-reporter": "^1.0.10",
+    "hardhat-storage-layout": "^0.1.7",
+    "solidity-coverage": "^0.8.16",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.3.0",
+    "@openzeppelin/contracts-upgradeable": "^5.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "hardhat-contract-sizer": "^2.10.0"
+  },
+  "main": "hardhat.config.js",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "erc20",
+    "eip-2535",
+    "diamond-pattern",
+    "hyperledger-besu",
+    "consortium",
+    "deposit-token",
+    "programmable-money",
+    "tokenized-deposits",
+    "hardhat"
+  ],
+  "author": "T3 Development Team",
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jessedh/t3.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jessedh/t3/issues"
+  },
+  "homepage": "https://github.com/jessedh/t3#readme",
+  "private": true
+}

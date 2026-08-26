@@ -1,0 +1,74 @@
+# Environment files — CRITICAL: contains private keys and secrets
+.env
+.env.*
+!.env.example
+
+# Generated local Besu devnet keys/genesis
+.besu-local/
+
+# Build artifacts and cache
+/node_modules
+**/node_modules/
+/artifacts/*
+artifacts/*
+/cache
+/dist
+
+# Build output
+/ui-management/.next
+/ui-management/tsconfig.tsbuildinfo
+
+# Deployment tarballs — regenerable from source
+*.tar.gz
+
+# Coverage and test reports — regenerable
+coverage/
+coverage.json
+playwright-report/
+test-results/
+test/test-results/
+**/.last-run.json
+
+# Generated reports
+gasReport.md
+contract-size-report.txt
+reports/
+
+# Temporary files
+~$*
+*.exp
+*.tmp
+*.temp
+
+# macOS specific
+.DS_Store
+**/.DS_Store
+*/*.DS_Store
+
+# IDE files
+.vscode/settings.json
+.gemini/
+.auto-claude/
+.auto-claude-security.json
+.auto-claude-status
+.claude/settings.local.json
+.claude_settings.json
+.worktrees/
+.security-key
+logs/security/
+
+# Third-party agent/tool config stubs (not project source)
+.agent/
+.roo/
+.continue/
+.vivus/
+.wake/
+
+# Auth credentials
+gha-creds-*.json
+
+# NotebookLM extract (regenerated via scripts/export-notebooklm-docs.js)
+T3-NotebookLM-Sources/
+
+# Local deployment artifact (consumed by e2e relayer tests; regenerated on deploy)
+.forwarder_address

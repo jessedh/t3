@@ -235,14 +235,14 @@ Re-audited 2026-08-25 after a dependency pass. Two numbers matter, and they diff
 a lot — `npm audit` counts the whole dev/build chain, while `npm audit --omit=dev`
 counts what a consumer of the running software is actually exposed to.
 
-| Tree | production-only (`--omit=dev`) | full tree | notes |
-|---|---|---|---|
-| root | **clean** | 22 low / 13 mod / 7 high | Every root advisory is Hardhat build tooling. 5 of the 7 highs are fixable only by Hardhat 3.x, a breaking migration. |
-| indexer | 2 mod / 4 high | 2 mod / 10 high | All pinned by `ponder@0.15`: `@hono/node-server`, `vite`, `esbuild`, `kysely`. |
-| relayer | 1 low | 1 low | |
-| keeper | 1 low | 1 low | Ships DISABLED and triple-gated. |
+| Tree | production-only (`--omit=dev`) | notes |
+|---|---|---|
+| root | **clean** | Every remaining root advisory is Hardhat build tooling. 5 highs are fixable only by Hardhat 3.x, a breaking migration of the whole build. |
+| indexer | **clean** | |
+| relayer | **clean** | |
+| keeper | **clean** | Ships DISABLED and triple-gated. |
 
-**No production-reachable critical anywhere.** What the pass fixed:
+**Every shipping tree is production-clean** as of 2026-08-26. What the passes fixed:
 - `drizzle-orm` upgraded to 0.45.2 via an npm override, closing an SQL-injection
   advisory (improperly escaped SQL identifiers) that `ponder@0.15` had pinned.
 - A **peer-dependency conflict** was resolved: `package.json` declared
@@ -251,12 +251,19 @@ counts what a consumer of the running software is actually exposed to.
   unsatisfiable peer on a fresh clone. Pinned to the Hardhat-2 lines
   (`hardhat-verify ^2.1.3`, `hardhat-ignition ^0.15.16`); zero invalid peers now.
 
+- **`kysely` upgraded to 0.28.17**, closing three SQL-injection advisories
+  (JSON-path traversal, MySQL backslash escaping, unsanitized JSON path keys). An
+  earlier attempt used `0.29.x`, which removes the `Migrator` export `ponder@0.15`
+  imports and broke the indexer at startup — the patches are in the **0.28 line**,
+  which ponder still supports. Verified with `ponder --version`, not just tests.
+- **`@hono/node-server` upgraded to 1.19.17**, closing an authorization bypass and
+  two path-traversal advisories in `serveStatic`.
+- **`vite` 6.4.3 and `esbuild` 0.25.12**, closing a `server.fs.deny` bypass, a
+  path-traversal in optimized-deps `.map` handling, and a dev-server request
+  advisory.
+- **`body-parser` 1.20.6** in `relayer/` and `keeper/`, closing a DoS advisory.
+
 **Deliberately NOT done, and why:**
-- **`kysely` was NOT upgraded**, despite a published SQL-injection advisory.
-  `kysely@0.29.x` removes the `Migrator` export that `ponder@0.15` imports, so the
-  override breaks the indexer at startup. Typecheck and all 53 indexer tests still
-  passed with it applied — only running `ponder --version` revealed the failure.
-  Fixing this requires moving off `ponder@0.15`, not an override.
 - **`ponder` was NOT upgraded** to 0.17.x. It was tried and reverted: it resolved
   zero advisories (the pins carry forward) and hit the same `kysely` breakage.
 - **Hardhat 3.x** would clear 5 root highs but is a breaking migration of the whole
